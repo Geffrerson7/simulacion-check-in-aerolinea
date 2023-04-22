@@ -1,24 +1,21 @@
 import type { Request, Response } from "express";
 import { success, failure } from "../../responses";
-import prisma from "../../datasource";
+import { flightData } from "../../service";
 
 export const findOne = async (
     req: Request,
     res: Response
 ): Promise<Response> => {
     try {
-        const id = Number(req.params.id)
-        
-        const flight = await prisma.flight.findUnique({ 
-            where: { flightId:id }, 
-            include:{boardingPasses:true}
-            });
+        const flightId = Number(req.params.id)
+        let data = {}
+        data = await flightData(flightId)
 
-        if (!flight){
-            return success({ res, status:404, data: {}});
+        if (data==null){
+            return success({ res, status:404 ,data:{}})
         }
-        
-        return success({ res, data: flight});
+
+        return success({ res, data });
     } catch (error) {
         return failure({ res, message: "could not connect to db" });
     }

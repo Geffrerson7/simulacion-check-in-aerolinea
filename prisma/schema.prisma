@@ -84,7 +84,7 @@ model BoardingPass {
 }
 
 model passenger {
-  passenger_id   Int            @id @default(autoincrement())
+  passenger_id   Int            @id @default(autoincrement()) @map("passengerId")
   dni            String         @db.VarChar(255)
   name           String         @db.VarChar(255)
   age            Int

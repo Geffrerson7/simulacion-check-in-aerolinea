@@ -3,12 +3,11 @@ import * as ROUTES from "../components";
 
 const routes: [string, Router][] = [
   ["flights", ROUTES.FlightRouter],
-  
 ];
 
 const router = (app: Application): void => {
   routes.forEach(([path, controler]) => {
-    app.use(`/api/v1/${path}`, controler);
+    app.use(`/${path}`, controler);
   });
 };
 
