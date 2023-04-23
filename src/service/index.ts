@@ -275,9 +275,7 @@ export async function seats_distribution(flightId: number): Promise<FlightData |
     // Distribución de asientos para los menores de edad
     for (const passenger of passengers) {
 
-        list_of_empty_seat_ids = available_seats_ids[
-            passenger["seatTypeId"]
-        ]
+        list_of_empty_seat_ids = available_seats_ids[passenger["seatTypeId"]]
 
         let assigned: boolean = false
 
@@ -297,21 +295,22 @@ export async function seats_distribution(flightId: number): Promise<FlightData |
                         const x_left_seat_id = left_seat_id(seat_id, seats_data)
                         const x_right_seat_id = right_seat_id(seat_id, seats_data)
 
-                        if (x_left_seat_id != null && 
+                        if (x_left_seat_id != null &&
                             list_of_empty_seat_ids.indexOf(x_left_seat_id) != -1) {
                             if (passenger["seatId"] === null) {
                                 passenger["seatId"] = seat_id
                                 list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
                             }
-                            
+
                             passengers[passengers.indexOf(companion)]["seatId"] = x_left_seat_id
 
                             list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_left_seat_id), 1);
 
                             assigned = true
 
-                        } else if (x_right_seat_id != null &&
-                             list_of_empty_seat_ids.indexOf(x_right_seat_id) != -1) {
+                        }
+                        else if (x_right_seat_id != null &&
+                            list_of_empty_seat_ids.indexOf(x_right_seat_id) != -1) {
 
                             if (passenger["seatId"] == null) {
                                 passenger["seatId"] = seat_id
@@ -332,6 +331,176 @@ export async function seats_distribution(flightId: number): Promise<FlightData |
                 }
                 available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
             }
+        }
+    }
+
+    // Distribución de asientos para adultos que tienen el mismo purchase id
+    for (const passenger of passengers) {
+        list_of_empty_seat_ids = available_seats_ids[passenger["seatTypeId"]]
+
+        let assigned: boolean = false
+
+        if (passenger["age"] >= 18 && passenger["seatId"] == null) {
+
+            const companions: Passenger[] = passengers.filter((companion) =>
+                companion.purchaseId === passenger["purchaseId"] &&
+                companion.seatId === null &&
+                companion.passengerId !== passenger["passengerId"]
+            );
+
+            if (companions) {
+                for (const companion of companions) {
+                    if (passengers[passengers.indexOf(companion)]["seatId"] == null) {
+                        for (const seat_id of list_of_empty_seat_ids) {
+                            const x_left_seat_id = left_seat_id(seat_id, seats_data)
+                            const x_right_seat_id = right_seat_id(seat_id, seats_data)
+                            const x_front_seat_id = front_seat_id(seat_id, seats_data)
+                            const x_back_seat_id = back_seat_id(seat_id, seats_data)
+                            const x_northeast_seat_id = northeast_seat_id(seat_id, seats_data)
+                            const x_southeast_seat_id = southeast_seat_id(seat_id, seats_data)
+                            const x_northwest_seat_id = northwest_seat_id(seat_id, seats_data)
+                            const x_southwest_seat_id = southwest_seat_id(seat_id, seats_data)
+
+                            if (x_left_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_left_seat_id) != -1) {
+                                if (passenger["seatId"] === null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_left_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_left_seat_id), 1);
+
+                                assigned = true
+
+                            }
+
+                            else if (x_right_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_right_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_right_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_right_seat_id), 1);
+
+                                assigned = true
+
+                            }
+
+                            else if (x_front_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_front_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_front_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_front_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            else if (x_back_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_back_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_back_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_back_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            else if (x_northeast_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_northeast_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_northeast_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_northeast_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            else if (x_southeast_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_southeast_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_southeast_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_southeast_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            else if (x_northwest_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_northwest_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_northwest_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_northwest_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            else if (x_southwest_seat_id != null &&
+                                list_of_empty_seat_ids.indexOf(x_southwest_seat_id) != -1) {
+
+                                if (passenger["seatId"] == null) {
+                                    passenger["seatId"] = seat_id
+                                    list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                                }
+
+                                passengers[passengers.indexOf(companion)]["seatId"] = x_southwest_seat_id
+
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_southwest_seat_id), 1);
+
+                                assigned = true
+                            }
+
+                            if (assigned == true) {
+                                break
+                            }
+                        }
+                    }
+                    available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
+                }
+            }
+
+        }
+    }
+
+    //Distribución de asientos para los pasajeros restantes
+    for (const passenger of passengers) {
+        list_of_empty_seat_ids = available_seats_ids[passenger["seatTypeId"]]
+        if (passenger["seatId"] == null) {
+            passenger["seatId"] = list_of_empty_seat_ids[0]
+            list_of_empty_seat_ids.splice(0, 1)
+            available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
         }
     }
 
