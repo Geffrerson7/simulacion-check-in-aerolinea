@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { success, failure } from "../../responses";
-import { flightData } from "../../service";
+import { seats_distribution } from "../../service";
 import { FlightData } from "../../interface";
 
 export const findOne = async (
@@ -10,7 +10,7 @@ export const findOne = async (
     try {
         const flightId = Number(req.params.id)
 
-        const data: FlightData = await flightData(flightId)
+        const data: FlightData = await seats_distribution(flightId)
 
         if (data == null) {
             return success({ res, status: 404, data: {} })

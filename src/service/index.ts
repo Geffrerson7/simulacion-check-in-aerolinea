@@ -2,7 +2,7 @@ import prisma from "../datasource";
 import { Seat } from "@prisma/client";
 import { Passenger, FlightData } from "../interface";
 
-export async function flightData(flightId: number): Promise<FlightData | null> {
+export async function flight_data(flightId: number): Promise<FlightData | null> {
     // Función que recibe el id del vuelo y retorna los datos del vuelo en formato CamelCase.
     const flight = await prisma.flight.findUnique({
         where: {
@@ -65,7 +65,7 @@ export async function flightData(flightId: number): Promise<FlightData | null> {
     return data;
 }
 
-export async function seatsList(): Promise<Seat[]> {
+export async function seats_list(): Promise<Seat[]> {
     // Función que devuelve una lista de todas las sillas ordenadas por id
     const seatsList = await prisma.seat.findMany({
         orderBy: {
@@ -91,7 +91,7 @@ export function occupied_seats_id(passengers_list: Passenger[]): number[] {
     return occupied_seats_id;
 }
 
-export async function list_of_available_seat_type_ids(seat_type_id: number, flight_data: FlightData) {
+export async function list_of_available_seat_type_ids(seat_type_id: number, flight_data: FlightData): Promise<number[]> {
     //Función que recibe el id de tipo de aiento y los datos del vuelo y retorna los id de los asientos disponibles por clase.
     const seats = await prisma.seat.findMany({
         where: {
@@ -109,4 +109,232 @@ export async function list_of_available_seat_type_ids(seat_type_id: number, flig
     const seat_available_type_id_list = seat_type_id_list.filter((seatId) => !occupied_seat_id_list.includes(seatId))
 
     return seat_available_type_id_list
-}   
+}
+
+export function left_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento de la izquierda.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let left_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) - 1)
+            && seat.seatRow === seat_x.seatRow
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            left_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return left_seat_id
+}
+
+export function right_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento de la derecha.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let right_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) + 1)
+            && seat.seatRow === seat_x.seatRow
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            right_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return right_seat_id
+}
+
+export function front_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del frente.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let front_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === seat_x.seatColumn
+            && seat.seatRow === seat_x.seatRow - 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            front_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return front_seat_id
+}
+
+export function back_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento trasero.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let back_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === seat_x.seatColumn
+            && seat.seatRow === seat_x.seatRow + 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            back_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return back_seat_id
+}
+
+export function northeast_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del noreste.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let northeast_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) + 1)
+            && seat.seatRow === seat_x.seatRow - 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            northeast_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return northeast_seat_id
+}
+
+export function southeast_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del sureste.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let southeast_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) + 1)
+            && seat.seatRow === seat_x.seatRow + 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            southeast_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return southeast_seat_id
+}
+
+export function northwest_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del noroeste.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let northwest_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) - 1)
+            && seat.seatRow === seat_x.seatRow - 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            northwest_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return northwest_seat_id
+}
+
+export function southwest_seat_id(seat_id: number, seats_list: Seat[]): number {
+    //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del suroeste.
+    const seat_x: Seat = seats_list[seat_id - 1]
+    let southwest_seat_id = null
+    for (const seat of seats_list) {
+        if (
+            seat.seatColumn === String.fromCharCode(seat_x.seatColumn.charCodeAt(0) - 1)
+            && seat.seatRow === seat_x.seatRow + 1
+            && seat.airplaneId === seat_x.airplaneId
+        ) {
+            southwest_seat_id = seat.seatId;
+            break;
+        }
+    }
+    return southwest_seat_id
+}
+
+export async function seats_distribution(flightId: number): Promise<FlightData | null> {
+    //Función que recibe el id de un vuelo y retorna los mismos datos pero con asientos asignados a cada pasajero
+    let data: FlightData = await flight_data(flightId)
+
+    if (!data) {
+        return null
+    }
+    let seats_data = await seats_list() //Lista de datos de todos los asientos
+
+    let first_class = await list_of_available_seat_type_ids(1, data)  // Lista de ids de asientos de primera clase
+    let premiun_economic_class = await list_of_available_seat_type_ids(2, data)  // Lista de ids de asientos de clase económica premiun
+    let economic_class = await list_of_available_seat_type_ids(3, data) // Lista de ids de asientos de clase económica
+
+    let available_seats_ids = {
+        1: first_class,
+        2: premiun_economic_class,
+        3: economic_class,
+    }
+
+    let list_of_empty_seat_ids: number[] = []
+    let passengers: Passenger[] = data["passengers"]
+
+    for (const passenger of passengers) {
+
+        list_of_empty_seat_ids = available_seats_ids[
+            passenger["seatTypeId"]
+        ]
+        let assigned: boolean = false
+
+        if (passenger["age"] < 18 && passenger["seatId"] == null) {
+            break
+        }
+        const companions: Passenger[] = passengers.filter((companion) =>
+            companion.purchaseId === passenger["purchaseId"] &&
+            companion.seatId === null &&
+            companion.passengerId !== passenger["passengerId"] &&
+            companion.age >= 18
+        );
+        // Distribución de asientos para los menores de edad
+        for (const companion of companions) {
+            if (passengers[passengers.indexOf(companion)]["seatId"] == null) {
+                for (const seat_id of list_of_empty_seat_ids) {
+                    if (
+                        left_seat_id(seat_id, seats_data)
+                        && left_seat_id(seat_id, seats_data)
+                        in list_of_empty_seat_ids
+                    ) {
+                        if (passenger["seatId"] == null) {
+                            passenger["seatId"] = seat_id
+                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                        }
+
+                        passengers[passengers.indexOf(companion)][
+                            "seatId"
+                        ] = left_seat_id(seat_id, seats_data)
+
+                        list_of_empty_seat_ids.splice(
+                            list_of_empty_seat_ids.indexOf(left_seat_id(seat_id, seats_data)), 1);
+
+                        assigned = true
+
+                    } else if (right_seat_id(seat_id, seats_data)
+                    && right_seat_id(seat_id, seats_data)
+                    in list_of_empty_seat_ids){
+
+                        if (passenger["seatId"] == null) {
+                            passenger["seatId"] = seat_id
+                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                        }
+
+                        passengers[passengers.indexOf(companion)][
+                            "seatId"
+                        ] = right_seat_id(seat_id, seats_data)
+
+                        list_of_empty_seat_ids.splice(
+                            list_of_empty_seat_ids.indexOf(right_seat_id(seat_id, seats_data)), 1);
+                            
+                        assigned = true
+                    }
+
+                    if (assigned){
+                        break
+                    }
+                }
+            }
+            available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
+        }
+
+    }
+    return data
+}
