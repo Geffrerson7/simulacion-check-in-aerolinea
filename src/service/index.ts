@@ -113,7 +113,7 @@ export async function list_of_available_seat_type_ids(seat_type_id: number, flig
 
 export function left_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento de la izquierda.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let left_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -130,7 +130,7 @@ export function left_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function right_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento de la derecha.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let right_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -147,7 +147,7 @@ export function right_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function front_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del frente.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let front_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -164,7 +164,7 @@ export function front_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function back_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento trasero.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let back_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -181,7 +181,7 @@ export function back_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function northeast_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del noreste.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let northeast_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -198,7 +198,7 @@ export function northeast_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function southeast_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del sureste.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let southeast_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -215,7 +215,7 @@ export function southeast_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function northwest_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del noroeste.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let northwest_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -232,7 +232,7 @@ export function northwest_seat_id(seat_id: number, seats_list: Seat[]): number {
 
 export function southwest_seat_id(seat_id: number, seats_list: Seat[]): number {
     //Función que recibe el id de un asiento y una lista de total de asientos y retorna el id del asiento del suroeste.
-    const seat_x: Seat = seats_list[seat_id - 1]
+    const seat_x: Seat = seats_list.find(seat => seat.seatId === seat_id);
     let southwest_seat_id = null
     for (const seat of seats_list) {
         if (
@@ -257,8 +257,11 @@ export async function seats_distribution(flightId: number): Promise<FlightData |
     let seats_data = await seats_list() //Lista de datos de todos los asientos
 
     let first_class = await list_of_available_seat_type_ids(1, data)  // Lista de ids de asientos de primera clase
+
     let premiun_economic_class = await list_of_available_seat_type_ids(2, data)  // Lista de ids de asientos de clase económica premiun
+
     let economic_class = await list_of_available_seat_type_ids(3, data) // Lista de ids de asientos de clase económica
+    //console.log(economic_class)
 
     let available_seats_ids = {
         1: first_class,
@@ -269,72 +272,70 @@ export async function seats_distribution(flightId: number): Promise<FlightData |
     let list_of_empty_seat_ids: number[] = []
     let passengers: Passenger[] = data["passengers"]
 
+    // Distribución de asientos para los menores de edad
     for (const passenger of passengers) {
 
         list_of_empty_seat_ids = available_seats_ids[
             passenger["seatTypeId"]
         ]
+
         let assigned: boolean = false
 
         if (passenger["age"] < 18 && passenger["seatId"] == null) {
-            break
-        }
-        const companions: Passenger[] = passengers.filter((companion) =>
-            companion.purchaseId === passenger["purchaseId"] &&
-            companion.seatId === null &&
-            companion.passengerId !== passenger["passengerId"] &&
-            companion.age >= 18
-        );
-        // Distribución de asientos para los menores de edad
-        for (const companion of companions) {
-            if (passengers[passengers.indexOf(companion)]["seatId"] == null) {
-                for (const seat_id of list_of_empty_seat_ids) {
-                    if (
-                        left_seat_id(seat_id, seats_data)
-                        && left_seat_id(seat_id, seats_data)
-                        in list_of_empty_seat_ids
-                    ) {
-                        if (passenger["seatId"] == null) {
-                            passenger["seatId"] = seat_id
-                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
-                        }
 
-                        passengers[passengers.indexOf(companion)][
-                            "seatId"
-                        ] = left_seat_id(seat_id, seats_data)
+            const companions: Passenger[] = passengers.filter((companion) =>
+                companion.purchaseId === passenger["purchaseId"] &&
+                companion.seatId === null &&
+                companion.passengerId !== passenger["passengerId"] &&
+                companion.age >= 18
+            );
 
-                        list_of_empty_seat_ids.splice(
-                            list_of_empty_seat_ids.indexOf(left_seat_id(seat_id, seats_data)), 1);
+            for (const companion of companions) {
+                if (passengers[passengers.indexOf(companion)]["seatId"] == null) {
 
-                        assigned = true
+                    for (const seat_id of list_of_empty_seat_ids) {
+                        const x_left_seat_id = left_seat_id(seat_id, seats_data)
+                        const x_right_seat_id = right_seat_id(seat_id, seats_data)
 
-                    } else if (right_seat_id(seat_id, seats_data)
-                    && right_seat_id(seat_id, seats_data)
-                    in list_of_empty_seat_ids){
-
-                        if (passenger["seatId"] == null) {
-                            passenger["seatId"] = seat_id
-                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
-                        }
-
-                        passengers[passengers.indexOf(companion)][
-                            "seatId"
-                        ] = right_seat_id(seat_id, seats_data)
-
-                        list_of_empty_seat_ids.splice(
-                            list_of_empty_seat_ids.indexOf(right_seat_id(seat_id, seats_data)), 1);
+                        if (x_left_seat_id != null && 
+                            list_of_empty_seat_ids.indexOf(x_left_seat_id) != -1) {
+                            if (passenger["seatId"] === null) {
+                                passenger["seatId"] = seat_id
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                            }
                             
-                        assigned = true
-                    }
+                            passengers[passengers.indexOf(companion)]["seatId"] = x_left_seat_id
 
-                    if (assigned){
-                        break
+                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_left_seat_id), 1);
+
+                            assigned = true
+
+                        } else if (x_right_seat_id != null &&
+                             list_of_empty_seat_ids.indexOf(x_right_seat_id) != -1) {
+
+                            if (passenger["seatId"] == null) {
+                                passenger["seatId"] = seat_id
+                                list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(seat_id), 1);
+                            }
+
+                            passengers[passengers.indexOf(companion)]["seatId"] = x_right_seat_id
+
+                            list_of_empty_seat_ids.splice(list_of_empty_seat_ids.indexOf(x_right_seat_id), 1);
+
+                            assigned = true
+                        }
+
+                        if (assigned == true) {
+                            break
+                        }
                     }
                 }
+                available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
             }
-            available_seats_ids[passenger["seatTypeId"]] = list_of_empty_seat_ids
         }
-
     }
+
+    data["passengers"] = passengers
+
     return data
 }

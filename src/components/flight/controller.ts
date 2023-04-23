@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { success, failure } from "../../responses";
-import { seats_distribution } from "../../service";
+import { seats_distribution, flight_data } from "../../service";
 import { FlightData } from "../../interface";
 
 export const findOne = async (
