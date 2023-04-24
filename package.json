@@ -5,6 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
+    "build": "npx tsc",
     "start": "node dist/src/index.js"
   },
   "author": "Gefferson Casasola",
