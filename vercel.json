@@ -3,7 +3,10 @@
     "builds": [
         {
             "src": "dist/index.js",
-            "use": "@vercel/node"
+            "use": "@vercel/node",
+            "build": {
+                "command": "npx prisma db pull && npm run build"
+            }
         }
     ],
     "routes": [
