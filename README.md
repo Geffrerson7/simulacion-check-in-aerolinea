@@ -159,7 +159,7 @@ Para diseñar la lógica de programación del proyecto usé el artículo ["Exper
 ## Demo
 Para el despliegue del proyecto se utilizó Vercel.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://simulacion-check-in-aerolinea.vercel.app/flights/1/passengers)
+[![Deploy with Vercel](https://vercel.com/button)](https://simulacion-check-in-aerolinea.vercel.app)
 
 
 ## Autor

@@ -3,6 +3,7 @@ import * as ROUTES from "../components";
 
 const routes: [string, Router][] = [
   ["flights", ROUTES.FlightRouter],
+  ["/", ROUTES.RedirectRouter]
 ];
 
 const router = (app: Application): void => {
