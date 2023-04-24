@@ -5,18 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seats_distribution = exports.southwest_seat_id = exports.northwest_seat_id = exports.southeast_seat_id = exports.northeast_seat_id = exports.back_seat_id = exports.front_seat_id = exports.right_seat_id = exports.left_seat_id = exports.list_of_available_seat_type_ids = exports.occupied_seats_id = exports.seats_list = exports.flight_data = void 0;
 const datasource_1 = __importDefault(require("../datasource"));
-const ts_retry_promise_1 = require("ts-retry-promise");
 async function flight_data(flightId) {
     // Función que recibe el id del vuelo y retorna los datos del vuelo en formato CamelCase.
-    const flight = await (0, ts_retry_promise_1.retry)(() => datasource_1.default.flight.findUnique({
+    const flight = await datasource_1.default.flight.findUnique({
         where: {
             flightId: flightId
         }
-    }));
+    });
     if (!flight) {
         return null;
     }
-    const boardingPasses = await (0, ts_retry_promise_1.retry)(() => datasource_1.default.boardingPass.findMany({
+    const boardingPasses = await datasource_1.default.boardingPass.findMany({
         where: {
             flightId: flight.flightId
         },
@@ -33,7 +32,7 @@ async function flight_data(flightId) {
                 }
             }
         ]
-    }));
+    });
     if (boardingPasses.length === 0) {
         return null;
     }
@@ -65,11 +64,11 @@ async function flight_data(flightId) {
 exports.flight_data = flight_data;
 async function seats_list() {
     // Función que devuelve una lista de todas las sillas ordenadas por id
-    const seatsList = await (0, ts_retry_promise_1.retry)(() => datasource_1.default.seat.findMany({
+    const seatsList = await datasource_1.default.seat.findMany({
         orderBy: {
             seatId: 'asc',
         },
-    }));
+    });
     return seatsList;
 }
 exports.seats_list = seats_list;
@@ -89,12 +88,12 @@ function occupied_seats_id(passengers_list) {
 exports.occupied_seats_id = occupied_seats_id;
 async function list_of_available_seat_type_ids(seat_type_id, flight_data) {
     //Función que recibe el id de tipo de aiento y los datos del vuelo y retorna los id de los asientos disponibles por clase.
-    const seats = await (0, ts_retry_promise_1.retry)(() => datasource_1.default.seat.findMany({
+    const seats = await datasource_1.default.seat.findMany({
         where: {
             airplaneId: flight_data.airplaneId,
             seatTypeId: seat_type_id,
         },
-    }));
+    });
     if (!seats) {
         return null;
     }

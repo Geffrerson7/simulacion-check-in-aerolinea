@@ -1,22 +1,21 @@
 import prisma from "../datasource";
 import { Seat } from "@prisma/client";
 import { Passenger, FlightData } from "../interface";
-import { retry } from 'ts-retry-promise';
 
 
 export async function flight_data(flightId: number): Promise<FlightData | null> {
     // Función que recibe el id del vuelo y retorna los datos del vuelo en formato CamelCase.
-    const flight = await retry(() => prisma.flight.findUnique({
+    const flight = await prisma.flight.findUnique({
         where: {
             flightId: flightId
         }
-    }));
+    });
 
     if (!flight) {
         return null;
     }
 
-    const boardingPasses = await retry(() => prisma.boardingPass.findMany({
+    const boardingPasses = await prisma.boardingPass.findMany({
         where: {
             flightId: flight.flightId
         },
@@ -33,7 +32,7 @@ export async function flight_data(flightId: number): Promise<FlightData | null> 
                 }
             }
         ]
-    }));
+    });
 
     if (boardingPasses.length === 0) {
         return null;
@@ -69,11 +68,11 @@ export async function flight_data(flightId: number): Promise<FlightData | null> 
 
 export async function seats_list(): Promise<Seat[]> {
     // Función que devuelve una lista de todas las sillas ordenadas por id
-    const seatsList = await retry(() => prisma.seat.findMany({
+    const seatsList = await prisma.seat.findMany({
         orderBy: {
             seatId: 'asc',
         },
-    }));
+    });
     return seatsList;
 }
 
@@ -95,12 +94,12 @@ export function occupied_seats_id(passengers_list: Passenger[]): number[] {
 
 export async function list_of_available_seat_type_ids(seat_type_id: number, flight_data: FlightData): Promise<number[]> {
     //Función que recibe el id de tipo de aiento y los datos del vuelo y retorna los id de los asientos disponibles por clase.
-    const seats = await retry(() => prisma.seat.findMany({
+    const seats = await prisma.seat.findMany({
         where: {
             airplaneId: flight_data.airplaneId,
             seatTypeId: seat_type_id,
         },
-    }));
+    });
 
     if (!seats) {
         return null
