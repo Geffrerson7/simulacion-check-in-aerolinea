@@ -147,10 +147,10 @@ http://localahost:PORT/flights/id/passengers
 * **concurently**  (v. 7.6.0) [Source](https://www.npmjs.com/package/concurrently)
 * **ts-node**  (v. 10.9.1) [Source](https://www.npmjs.com/package/ts-node)
 * **tslib**  (v. 2.4.1) [Source](https://www.npmjs.com/package/tslib)
-* **ts-retry-promise** (v. 0.7.0) [Source](https://www.npmjs.com/package/tslib)
+* **ts-retry-promise** (v. 0.7.0) [Source](https://www.npmjs.com/package/ts-retry-promise)
 
 ## Documentación
-La documentación del projecto en Postman está en este [Link](https://www.npmjs.com/package/ts-retry-promise)
+La documentación del projecto en Postman está en este [Link](https://documenter.getpostman.com/view/24256278/2s93Y5PKqz)
 
 ## Referencias
 
