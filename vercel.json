@@ -10,7 +10,7 @@
                     "prisma/schema.prisma",
                     "package.json"
                 ],
-                "command": "npm install && npm run build"
+                "command": "npm install && npx prisma generate && npm run build"
             }
         }
     ],
