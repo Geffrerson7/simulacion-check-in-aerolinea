@@ -70,7 +70,7 @@ model BoardingPass {
   seatId         Int?      @map("seat_id")
   flightId       Int       @map("flight_id")
   flight         Flight    @relation(fields: [flightId], references: [flightId], onDelete: Cascade, onUpdate: Restrict, map: "flight_id_bp")
-  passenger      passenger @relation(fields: [passengerId], references: [passenger_id], onDelete: Cascade, onUpdate: Restrict, map: "passenger_id_bp")
+  passenger      Passenger @relation(fields: [passengerId], references: [passengerId], onDelete: Cascade, onUpdate: Restrict, map: "passenger_id_bp")
   purchase       Purchase  @relation(fields: [purchaseId], references: [purchaseId], onDelete: Cascade, onUpdate: Restrict, map: "purchase_id_bp")
   seat           Seat?     @relation(fields: [seatId], references: [seatId], onDelete: Cascade, onUpdate: Restrict, map: "seat_id_bp")
   seatType       SeatType  @relation(fields: [seatTypeId], references: [seatTypeId], onDelete: Cascade, onUpdate: Restrict, map: "seat_type_id_bp")
@@ -83,11 +83,13 @@ model BoardingPass {
   @@map("boarding_pass")
 }
 
-model passenger {
-  passenger_id   Int            @id @default(autoincrement()) @map("passengerId")
+model Passenger {
+  passengerId   Int            @id @default(autoincrement()) @map("passenger_id")
   dni            String         @db.VarChar(255)
   name           String         @db.VarChar(255)
   age            Int
   country        String         @db.VarChar(255)
   boardingPasses BoardingPass[]
+
+  @@map("passenger")
 }
