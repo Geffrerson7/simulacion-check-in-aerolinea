@@ -124,7 +124,7 @@ Luego instalar las dependencias
 $ npm install
 ```
 
-Run project
+Luego ejecutar el comando
 
 ```bash
 $ npm run dev
@@ -133,7 +133,7 @@ $ npm run dev
 Y navegar a la ruta
 
 ```sh
-http://localahost:PORT/flights/id/passengers
+http://localhost:PORT/flights/id/passengers
 ```
 
 ## Tecnologías y lenguajes utilizados
