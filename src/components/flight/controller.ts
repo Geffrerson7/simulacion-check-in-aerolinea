@@ -18,6 +18,7 @@ export const findOne = async (
 
         return success({ res, data });
     } catch (error) {
+        console.log(error)
         return failure({ res, message: "could not connect to db" });
     }
 }
