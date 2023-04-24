@@ -8,7 +8,8 @@
                 "includeFiles": [
                     "src/**",
                     "prisma/schema.prisma",
-                    "package.json"
+                    "package.json", 
+                    "dist/**"
                 ],
                 "command": "npm install && npx prisma generate && npm run build"
             }
